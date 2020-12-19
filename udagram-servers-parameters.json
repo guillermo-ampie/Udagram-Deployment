@@ -1,0 +1,18 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "Udagram"
+	},
+	{
+		"ParameterKey": "AppStorageBucket",
+		"ParameterValue": "udacity-demo-1"
+	},
+	{
+		"ParameterKey": "BastionKeyPair",
+		"ParameterValue": "PUT_HERE_YOUR_KEY_PAIR"
+	},
+	{
+		"ParameterKey": "MyIpAddressRange",
+		"ParameterValue": "PUT_HERE_YOUR_IP_ADDRESS_RANGE:a.b.c.d/x"
+	}
+]
