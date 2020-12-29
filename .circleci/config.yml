@@ -23,7 +23,7 @@ jobs:
       - run: 
           name: "echo an env variable at Project level"
           command: | 
-            echo "${AUTHOR_NAME}"
+            echo "AUTHOR: ${AUTHOR_NAME}  TRUSTED:${TRUSTED}"
 
 
 # Orchestrate or schedule a set of jobs
