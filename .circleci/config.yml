@@ -32,7 +32,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/workspace01
           paths:
-            - output.txt
+            - /tmp/workspace01/output.txt
   print_output_file:
     docker:
       - image: circleci/node:13.8.0
