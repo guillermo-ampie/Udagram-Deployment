@@ -24,6 +24,22 @@ jobs:
           name: "echo an env variable at Project level"
           command: | 
             echo "AUTHOR: ${AUTHOR_NAME}  TRUSTED:${TRUSTED}"
+  save_output_file:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run: echo ">>> Saving this line into a file <<<" > output.txt
+      - persist_to_workspace:
+          root: /tmp/workspace01
+          paths:
+            - output.txt
+  print_output_file:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run: cat output.txt
+      - attach_workspace:
+          at: /tmp/workspace01
 
 
 # Orchestrate or schedule a set of jobs
@@ -38,4 +54,5 @@ workflows:
             - print_hello
       - print_author_name
       - welcome/run
-
+      - save_output_file
+      - print_output_file
