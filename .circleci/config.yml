@@ -28,7 +28,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: echo "*** Saving this line into a file ***" > output.txt
+      - run: mkdir /tmp/workspace01;echo "*** Saving this line into a file ***" > /tmp/workspace01/output.txt
       - persist_to_workspace:
           root: /tmp/workspace01
           paths:
@@ -37,7 +37,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: cat output.txt
+      - run: cat /tmp/workspace01/output.txt
       - attach_workspace:
           at: /tmp/workspace01
 
