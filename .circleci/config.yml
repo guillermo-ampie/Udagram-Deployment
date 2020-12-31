@@ -35,7 +35,7 @@ jobs:
           working_directory: /tmp/workspace01
           command: echo "*** Saving this line into a file ***" > output.txt
       - persist_to_workspace:
-          # The root directory must exist, use (1) "mkdir my_root_dir" your command entry (command: mkdir my_root_dir && another_command) or (2) specify  "working_directory: my_root_dir"
+          # The root directory must exist, use (1) "mkdir my_root_dir" in your command entry (command: mkdir my_root_dir && another_command) or (2) specify  "working_directory: my_root_dir"
           root: /tmp/workspace01
           paths:
             - output.txt
