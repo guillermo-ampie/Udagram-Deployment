@@ -12,7 +12,7 @@ my_working_directory: &my_working_directory
 my_root_directory: &my_root_directory
   root: ${DEFAULT_DIR}
 
-my_attach_dir: &my_attach_dir
+my_attach_directory: &my_attach_directory
   at: ${DEFAULT_DIR}
 
 my_docker_image: &my_docker_image
@@ -55,7 +55,7 @@ jobs:
     <<: *my_docker_image
     steps:
       - attach_workspace:
-          at: /tmp/workspace01
+          <<: *my_attach_directory
       - run: 
           <<: *my_working_directory
           command: cat output.txt
