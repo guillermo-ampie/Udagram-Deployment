@@ -33,7 +33,7 @@ jobs:
     steps:
       - run: 
           working_directory: /tmp/workspace01
-          command: echo "*** Saving this line into a file ***" > /output.txt
+          command: echo "*** Saving this line into a file ***" > output.txt
       - persist_to_workspace:
           root: /tmp/workspace01
           paths:
