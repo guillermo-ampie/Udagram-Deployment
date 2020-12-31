@@ -5,6 +5,11 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
 
+
+my_working_directory: &my_working_directory
+ working_directory: /tmp/workspace01
+
+
 jobs:
   print_hello:
     docker:
@@ -32,7 +37,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - run: 
-          working_directory: /tmp/workspace01
+          <<: *my_working_directory
           command: echo "*** Saving this line into a file ***" > output.txt
       - persist_to_workspace:
           # The root directory must exist, use (1) "mkdir my_root_dir" in your command entry (command: mkdir my_root_dir && another_command) or (2) specify  "working_directory: my_root_dir"
