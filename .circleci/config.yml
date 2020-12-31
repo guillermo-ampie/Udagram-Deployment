@@ -5,27 +5,31 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
 
-
+# DEFAULTS_BEGIN
 my_working_directory: &my_working_directory
  working_directory: /tmp/workspace01
 
+my_root_directory: &my_root_directory
+ root: /tmp/workspace01
+
+my_docker_image: &my_docker_image
+  docker:
+    - image: circleci/node:13.8.0
+# DEFAULTS_END
 
 jobs:
   print_hello:
-    docker:
-      - image: circleci/node:13.8.0
+    <<: *my_docker_image
     steps:
       - run: echo "Hello..."
 
   print_world:
-    docker:
-      - image: circleci/node:13.8.0
+    <<: *my_docker_image
     steps:
       - run: echo "World!"  
 
   print_author_name:
-    docker:
-      - image: circleci/node:13.8.0
+    <<: *my_docker_image
     steps:
       - run: 
           name: "echo an env variable at Project level"
@@ -33,26 +37,24 @@ jobs:
             echo "AUTHOR: ${AUTHOR_NAME}  TRUSTED:${TRUSTED}"
 
   save_output_file:
-    docker:
-      - image: circleci/node:13.8.0
+    <<: *my_docker_image
     steps:
       - run: 
           <<: *my_working_directory
           command: echo "*** Saving this line into a file ***" > output.txt
       - persist_to_workspace:
           # The root directory must exist, use (1) "mkdir my_root_dir" in your command entry (command: mkdir my_root_dir && another_command) or (2) specify  "working_directory: my_root_dir"
-          root: /tmp/workspace01
+          <<: *my_root_directory
           paths:
             - output.txt
 
   print_output_file:
-    docker:
-      - image: circleci/node:13.8.0
+    <<: *my_docker_image
     steps:
       - attach_workspace:
           at: /tmp/workspace01
       - run: 
-          working_directory: /tmp/workspace01
+          <<: *my_working_directory
           command: cat output.txt
 
 
