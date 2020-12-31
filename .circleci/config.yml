@@ -7,10 +7,13 @@ orbs:
 
 # DEFAULTS_BEGIN
 my_working_directory: &my_working_directory
- working_directory: /tmp/workspace01
+  working_directory: ${DEFAULT_DIR}
 
 my_root_directory: &my_root_directory
- root: /tmp/workspace01
+  root: ${DEFAULT_DIR}
+
+my_attach_dir: &my_attach_dir
+  at: ${DEFAULT_DIR}
 
 my_docker_image: &my_docker_image
   docker:
