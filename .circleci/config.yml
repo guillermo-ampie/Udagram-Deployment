@@ -27,7 +27,7 @@ commands:
       variable:
         type: string
     steps:
-      - run: echo "Pipeline ID [parameters.variable]"
+      - run: echo "Pipeline ID [<<parameters.variable>>]"
 
 
 jobs:
