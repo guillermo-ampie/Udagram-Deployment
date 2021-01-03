@@ -31,7 +31,8 @@ jobs:
   print_hello:
     <<: *my_docker_image
     steps:
-      - run: print_pipeline_id
+      # - run: print_pipeline_id
+      - run: echo "Before HELLO!"
       - run: echo "Hello..."
 
   print_world:
