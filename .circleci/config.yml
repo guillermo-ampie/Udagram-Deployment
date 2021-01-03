@@ -38,6 +38,12 @@ jobs:
           variable: $CIRCLE_WORKFLOW_ID
       - run: echo "Hello..."
 
+  print_hello2:
+    <<: *my_docker_image
+    steps:
+      - print_pipeline_variable:
+          variable: <<pipeline.id>>
+
   print_world:
     <<: *my_docker_image
     steps:
