@@ -43,7 +43,13 @@ jobs:
     steps:
       - print_variable:
           variable: <<pipeline.id>>
-
+      # Simulate an error
+      - run: return 1
+      - run: 
+          name: "Activate On Error - protocol"
+          command: echo "We got an error, launching rollback process"
+          when: on_fail
+          
   print_world:
     <<: *my_docker_image
     steps:
