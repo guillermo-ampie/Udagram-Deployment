@@ -44,7 +44,7 @@ jobs:
       - print_variable:
           variable: <<pipeline.id>>
       # Simulate an error
-      - run: return 1
+      - run: non_existent_command
       - run: 
           name: "Activate On Error - protocol"
           command: echo "We got an error, launching rollback process"
