@@ -21,17 +21,21 @@ my_docker_image: &my_docker_image
 # DEFAULTS_END
 
 commands:
-  print_pipeline_id: 
-    description: "Prints the pipeline id"
+  print_variable: 
+    description: "Prints the parameter passed to the command"
+    parameters:
+      variable:
+        type: string
     steps:
-      - run: echo "Pipeline ID [$CIRCLE_WORKFLOW_ID]"
+      - run: echo "Pipeline ID [parameters.variable]"
 
 
 jobs:
   print_hello:
     <<: *my_docker_image
     steps:
-      - print_pipeline_id
+      - print_pipeline_id:
+        - variable: $CIRCLE_WORKFLOW_ID
       - run: echo "Hello..."
 
   print_world:
