@@ -41,7 +41,7 @@ jobs:
   print_hello2:
     <<: *my_docker_image
     steps:
-      - print_pipeline_variable:
+      - print_variable:
           variable: <<pipeline.id>>
 
   print_world:
