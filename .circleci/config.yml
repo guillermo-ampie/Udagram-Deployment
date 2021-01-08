@@ -38,17 +38,17 @@ jobs:
           variable: $CIRCLE_WORKFLOW_ID
       - run: echo "Hello..."
 
-  print_hello2:
-    <<: *my_docker_image
-    steps:
-      - print_variable:
-          variable: <<pipeline.id>>
-      # Simulate an error
-      - run: non_existent_command
-      - run: 
-          name: "Activate On Error - protocol"
-          command: echo "We got an error, launching rollback process"
-          when: on_fail
+  # print_hello2:
+  #   <<: *my_docker_image
+  #   steps:
+  #     - print_variable:
+  #         variable: <<pipeline.id>>
+  #     # Simulate an error
+  #     - run: non_existent_command
+  #     - run: 
+  #         name: "Activate On Error - protocol"
+  #         command: echo "We got an error, launching rollback process"
+  #         when: on_fail
 
   print_world:
     <<: *my_docker_image
@@ -95,7 +95,7 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - print_hello
-      - print_hello2
+      # - print_hello2
       - print_world:
           requires:
             - print_hello
