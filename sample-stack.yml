@@ -34,5 +34,5 @@ Resources:
       InstanceType: t2.micro
       Tags:
         - Key: Name
-          Value: "sample-instance"
+          Value: "sample"
 
