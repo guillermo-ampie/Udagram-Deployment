@@ -20,15 +20,6 @@ my_docker_image: &my_docker_image
     - image: circleci/node:13.8.0
 # DEFAULTS_END
 
-commands:
-  print_variable: 
-    description: "Prints the parameter passed to the command"
-    parameters:
-      variable:
-        type: string
-    steps:
-      - run: echo "Pipeline ID [<<parameters.variable>>]"
-
 #
 # To execute the aws cli, we need to define the following project's env variables:
 # AWS_ACCESS_KEY_ID
