@@ -38,6 +38,16 @@ jobs:
           variable: $CIRCLE_WORKFLOW_ID
       - run: echo "Hello..."
 
+  create_infrastructure:
+    docker:
+    - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+        name: Deploy CloudFormation Stack
+        command: |
+          aws cloudformation deploy --template-file sample-stack.yml \
+          --stack sample-ec2-stack
   # print_hello2:
   #   <<: *my_docker_image
   #   steps:
@@ -96,6 +106,7 @@ workflows:
     jobs:
       - print_hello
       # - print_hello2
+      - create_infrastructure
       - print_world:
           requires:
             - print_hello
