@@ -44,10 +44,11 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Deploy CloudFormation Stack
-        command: |
-          aws cloudformation deploy --template-file sample-stack.yml \
-          --stack sample-ec2-stack
+          name: Deploy CloudFormation Stack
+          command: |
+            aws cloudformation deploy --template-file sample-stack.yml \
+            --stack sample-ec2-stack
+
   # print_hello2:
   #   <<: *my_docker_image
   #   steps:
