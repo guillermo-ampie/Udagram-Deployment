@@ -30,14 +30,16 @@ commands:
       - run: echo "Pipeline ID [<<parameters.variable>>]"
 
 
-jobs:
-  print_hello:
-    <<: *my_docker_image
-    steps:
-      - print_variable:
-          variable: $CIRCLE_WORKFLOW_ID
-      - run: echo "Hello..."
-
+#
+# To execute the aws cli, we need to define the following env variables:
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
+# AWS_DEFAULT_REGION
+#
+# If the aws cli is already installed in your local computer and you are 
+# going to use the same account, these values can be found in: 
+# ~/.aws/config and  ~/.aws/credentials  
+#
   create_infrastructure:
     docker:
     - image: amazon/aws-cli
@@ -61,11 +63,6 @@ jobs:
   #         command: echo "We got an error, launching rollback process"
   #         when: on_fail
 
-  print_world:
-    <<: *my_docker_image
-    steps:
-      - run: echo "World!"  
-
   print_author_name:
     <<: *my_docker_image
     steps:
@@ -73,8 +70,6 @@ jobs:
           name: "echo an env variable at Project level"
           command: | 
             echo "AUTHOR: ${AUTHOR_NAME}  TRUSTED:${TRUSTED}"
-
-  
 
   save_output_file:
     <<: *my_docker_image
@@ -105,14 +100,9 @@ workflows:
   welcome:
     # Run the welcome/run job in its own container
     jobs:
-      - print_hello
-      # - print_hello2
-      - create_infrastructure
-      - print_world:
-          requires:
-            - print_hello
-      - print_author_name
       - welcome/run
+      - create_infrastructure
+      - print_author_name
       - save_output_file
       - print_output_file:
           requires:
