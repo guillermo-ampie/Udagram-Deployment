@@ -29,17 +29,20 @@ commands:
     steps:
       - run: echo "Pipeline ID [<<parameters.variable>>]"
 
-
 #
-# To execute the aws cli, we need to define the following env variables:
+# To execute the aws cli, we need to define the following project's env variables:
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
 # AWS_DEFAULT_REGION
 #
 # If the aws cli is already installed in your local computer and you are 
-# going to use the same account, these values can be found in: 
+# going to use the same account, these values can be found at: 
 # ~/.aws/config and  ~/.aws/credentials  
+
 #
+# TODO: Use circle/ci Orb: 
+# https://circleci.com/developer/orbs/orb/circleci/aws-cli
+
   create_infrastructure:
     docker:
     - image: amazon/aws-cli
@@ -91,7 +94,6 @@ commands:
       - run: 
           <<: *my_working_directory
           command: cat output.txt
-
 
 
 # Orchestrate or schedule a set of jobs
