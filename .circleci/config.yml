@@ -5,23 +5,8 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
 
-# DEFAULTS_BEGIN
-my_working_directory: &my_working_directory
-  working_directory: ${DEFAULT_DIR}   # Project's env-var
 
-my_root_directory: &my_root_directory
-  root: ${DEFAULT_DIR}
-
-my_attach_directory: &my_attach_directory
-  at: ${DEFAULT_DIR}
-
-my_docker_image: &my_docker_image
-  docker:
-    - image: circleci/node:13.8.0
-# DEFAULTS_END
-
-
-
+jobs:
   create_infrastructure:
     docker:
     - image: amazon/aws-cli
@@ -33,46 +18,11 @@ my_docker_image: &my_docker_image
             aws cloudformation deploy --template-file sample-stack.yml \
             --stack sample-ec2-stack
 
-  print_author_name:
-    <<: *my_docker_image
-    steps:
-      - run: 
-          name: "echo an env variable at Project level"
-          command: | 
-            echo "AUTHOR: ${AUTHOR_NAME}  TRUSTED:${TRUSTED}"
-
-  save_output_file:
-    <<: *my_docker_image
-    steps:
-      - run: 
-          <<: *my_working_directory
-          command: echo "*** Saving this line into a file ***" > output.txt
-      - persist_to_workspace:
-          # The root directory must exist, use (1) "mkdir my_root_dir" in your command entry (command: mkdir my_root_dir && another_command) or (2) specify  "working_directory: my_root_dir"
-          <<: *my_root_directory
-          paths:
-            - output.txt
-
-  print_output_file:
-    <<: *my_docker_image
-    steps:
-      - attach_workspace:
-          <<: *my_attach_directory
-      - run: 
-          <<: *my_working_directory
-          command: cat output.txt
-
 
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
-  welcome:
+  deploy_infrastrcuture:
     # Run the welcome/run job in its own container
     jobs:
-#      - welcome/run
       - create_infrastructure
-      - print_author_name
-      - save_output_file
-      - print_output_file:
-          requires:
-            - save_output_file
