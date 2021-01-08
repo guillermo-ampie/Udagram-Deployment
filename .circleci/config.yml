@@ -20,19 +20,7 @@ my_docker_image: &my_docker_image
     - image: circleci/node:13.8.0
 # DEFAULTS_END
 
-#
-# To execute the aws cli, we need to define the following project's env variables:
-# AWS_ACCESS_KEY_ID
-# AWS_SECRET_ACCESS_KEY
-# AWS_DEFAULT_REGION
-#
-# If the aws cli is already installed in your local computer and you are 
-# going to use the same account, these values can be found at: 
-# ~/.aws/config and  ~/.aws/credentials  
 
-#
-# TODO: Use circle/ci Orb: 
-# https://circleci.com/developer/orbs/orb/circleci/aws-cli
 
   create_infrastructure:
     docker:
