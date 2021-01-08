@@ -27,7 +27,12 @@ Resources:
   Ec2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
-      SecurityGroups:
-      - !Ref EC2SecurityGroup
+      SecurityGroups: 
+        - !Ref EC2SecurityGroup
       KeyName: !Ref EC2KeyPair
       ImageId: !Ref LatestAmiId
+      InstanceType: t2.micro
+      Tags:
+        - Key: Name
+          Value: "sample-instance"
+
