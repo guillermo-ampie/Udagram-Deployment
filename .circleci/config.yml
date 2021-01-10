@@ -20,7 +20,7 @@ jobs:
 
   configure_infrastructure:
     docker:
-      - image: python:3.9.0-alpine3.12
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - add_ssh_keys:
@@ -32,6 +32,7 @@ jobs:
       - run:
           name: Configure server
           command: |
+            export HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt playbook-remote-web-server.yml
 
 
