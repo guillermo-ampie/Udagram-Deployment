@@ -7,16 +7,32 @@ orbs:
 
 
 jobs:
-  create_infrastructure:
+  # create_infrastructure:
+  #   docker:
+  #   - image: amazon/aws-cli
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Deploy CloudFormation Stack
+  #         command: |
+  #           aws cloudformation deploy --template-file sample-stack.yml \
+  #           --stack sample-ec2-stack
+
+  configure_infrastructure:
     docker:
-    - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["6d:80:32:80:e0:a9:6a:97:07:b5:1f:35:95:ba:69:4f"] # You can get this ID in the section where you registered the SSH Key
       - run:
-          name: Deploy CloudFormation Stack
+          name: Install dependencies
           command: |
-            aws cloudformation deploy --template-file sample-stack.yml \
-            --stack sample-ec2-stack
+            apk add --update ansible # install the dependencies needed for your playbook
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt playbook-remote-web-server.yml
 
 
 # Orchestrate or schedule a set of jobs
@@ -25,4 +41,5 @@ workflows:
   deploy_infrastructure:
     # Run the welcome/run job in its own container
     jobs:
-      - create_infrastructure
+      # - create_infrastructure
+      - configure-infrastructure
