@@ -33,6 +33,7 @@ jobs:
           name: Configure server
           command: |
             export ANSIBLE_HOST_KEY_CHECKING=False
+            export ANSIBLE_SSH_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt playbook-remote-web-server.yml
 
 
