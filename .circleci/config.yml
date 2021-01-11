@@ -50,11 +50,9 @@ jobs:
       steps:
         - checkout
         - run: apk add --update curl
+        - run: return 1
         - run:
-            name: Smoke Test
-            command: |
-              return 1
-        - destroy_environment:
+            command: destroy_environment
             when: on_fail
 
   end_job:
