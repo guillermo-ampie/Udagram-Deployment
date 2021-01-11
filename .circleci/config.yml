@@ -63,7 +63,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: non_existent_command
+      # - run: non_existent_command
+      - run: echo "Hi!"
       # - run: 
       #     name: "Initiating rollback..."
       #     command: destroy_environment
