@@ -5,17 +5,16 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
 
+# Project's environment variable:
+# STACK_NAME: The CloudFormation stack name to create
 commands:
   destroy_environment: 
-    parameters:
-      stack_name:
-        type: string
     steps:
       - run: 
           name:  "Delete the environment"
           command: |
             echo "Deleting stack --> parameters.stack_name <--"
-            aws cloudformation delete-stack --stack-name parameters.stack_name
+            aws cloudformation delete-stack --stack-name ${STACK_NAME}
 
 jobs:
   create_infrastructure:
@@ -27,7 +26,7 @@ jobs:
           name: Deploy CloudFormation Stack
           command: |
             aws cloudformation deploy --template-file sample-stack.yml \
-            --stack sample-ec2-stack
+            --stack ${STACK_NAME}
 
   configure_infrastructure:
     docker:
@@ -49,13 +48,14 @@ jobs:
       docker:
         - image: alpine:latest
       steps:
+        - checkout
         - run: apk add --update curl
         - run:
             name: Smoke Test
             command: |
               return 1
-        - destroy_environment:
-            stack_name: sample-ec2-stack
+        - run:
+            command: destroy_environment
             when: on_fail
 
   end_job:
