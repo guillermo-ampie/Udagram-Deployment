@@ -15,6 +15,7 @@ commands:
           name:  "Delete the environment"
           command: |
             echo "Deleting stack: ${STACK_NAME}"
+            export TERM=ansi
             aws cloudformation delete-stack --stack-name ${STACK_NAME}
           when: on_fail
 
