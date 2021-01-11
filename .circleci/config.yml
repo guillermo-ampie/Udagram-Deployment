@@ -11,8 +11,8 @@ orbs:
 commands:
   destroy_environment: 
     description: Delete the stack
-    docker:
-    - image: amazon/aws-cli
+    # docker:
+    # - image: amazon/aws-cli
     steps:
       - run: 
           name:  "Delete the environment"
