@@ -20,6 +20,16 @@ commands:
             echo "Deleting stack: ${STACK_NAME}"
             aws cloudformation delete-stack --stack-name ${STACK_NAME}
 
+  say_hello:
+    description: "A very simple command for demonstration purposes"
+    parameters:
+      who:
+        type: string
+        default: "World"
+    steps:
+      - run: echo Hello << parameters.who >>
+
+
 jobs:
   create_infrastructure:
     docker:
@@ -53,13 +63,14 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: apk add --update curl
+      - run: apt-get add --update curl
       - run: return 1
-      - run: 
-          name: "Initiating rollback..."
-          command: destroy_environment
-          when: on_fail
-
+      # - run: 
+      #     name: "Initiating rollback..."
+      #     command: destroy_environment
+      #     when: on_fail
+      - say_hello:
+          who: "You, you, you!"
 
   end_job:
     docker:
