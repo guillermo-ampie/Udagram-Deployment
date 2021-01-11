@@ -4,6 +4,7 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
+  aws-cli: circleci/aws-cli@1.3.2
 
 # Project's environment variable:
 # STACK_NAME: The CloudFormation stack name to create
@@ -52,7 +53,7 @@ jobs:
 
   smoke_test:
     docker:
-      - image: cimg/base
+      - image: amazon/aws-cli
     steps:
       - checkout
       # - run: non_existent_command
