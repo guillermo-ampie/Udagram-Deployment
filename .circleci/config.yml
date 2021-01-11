@@ -1,94 +1,30 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
-orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-
-# Project's environment variable:
-# STACK_NAME: The CloudFormation stack name to create
 
 commands:
-  destroy_environment: 
-    description: Delete the stack
+  destroy_environment_on_fail:
     steps:
-      - run: 
-          name:  "Delete the environment"
+      - run:
+          name: Destroy environment
           command: |
-            echo "Deleting stack: ${STACK_NAME}"
             aws cloudformation delete-stack --stack-name ${STACK_NAME}
           when: on_fail
-
-  say_hello:
-    description: "A very simple command for demonstration purposes"
-    parameters:
-      who:
-        type: string
-        default: "World"
-    steps:
-      - run: echo Hello << parameters.who >>
-
 
 jobs:
   create_infrastructure:
     docker:
-    - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Deploy CloudFormation Stack
-          command: |
-            aws cloudformation deploy --template-file sample-stack.yml \
-            --stack ${STACK_NAME}
-
-  configure_infrastructure:
-    docker:
-      - image: python:3.9.1-alpine3.12
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["e1:84:f7:0e:6f:c5:70:96:82:7f:6f:1c:31:45:a9:cd"] # You can get this ID in the section where you registered the SSH Key
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible # install the dependencies needed for your playbook
-      - run:
-          name: Configure server
-          command: |
-            ansible-playbook -i inventory.txt playbook-remote-web-server.yml
-
-  smoke_test:
-    docker:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: non_existent_command
-      # - run: echo "Hi!"
-      - run:  destroy_environment
-      # - run:
-      #     command: say_hello
-      #     when: on_fail
+      - run:
+          name: Create Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file sample-stack.yml \
+              --stack-name ${STACK_NAME}
+      - run: return 1
+      - destroy_environment_on_fail
 
-  end_job:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run: echo "*** Finishing Pipeline ***"
-
-# Orchestrate or schedule a set of jobs
 workflows:
-  # Name the workflow "welcome"
-  deploy_infrastructure:
-    # Run the welcome/run job in its own container
+  my_workflow:
     jobs:
       - create_infrastructure
-      # - configure_infrastructure:
-      #     requires:
-      #       - create_infrastructure
-      - smoke_test:
-          requires:
-            # - configure_infrastructure
-            - create_infrastructure
-      # - end_job:
-      #     requires:
-      #       - smoke_test
