@@ -7,8 +7,10 @@ orbs:
 
 # Project's environment variable:
 # STACK_NAME: The CloudFormation stack name to create
+
 commands:
   destroy_environment: 
+    description: Delete the stack $STACK_NAME
     steps:
       - run: 
           name:  "Delete the environment"
@@ -51,8 +53,7 @@ jobs:
         - checkout
         - run: apk add --update curl
         - run: return 1
-        - run:
-            command: destroy_environment
+        - destroy_environment:
             when: on_fail
 
   end_job:
