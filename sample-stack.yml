@@ -11,7 +11,7 @@ Parameters:
 
   LatestAmiId:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
-    Default: '/aws/service/canonical/ubuntu/server/bionic/stable/current/amd6/hvm/ebs-gp2/ami-id'     
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp'     
 
 Resources:
   EC2SecurityGroup:
@@ -34,7 +34,8 @@ Resources:
       SecurityGroups: 
         - !Ref EC2SecurityGroup
       KeyName: !Ref EC2KeyPair
-      ImageId: !Ref LatestAmiId
+      # ImageId: !Ref LatestAmiId
+      ImageId: ami-07dd19a7900a1f049 #Ubuntu Server 18.04 LTS (HVM), SSD Volume Type - ami-0ac73f33a1888c64a (64-bit x86)
       InstanceType: t2.micro
       Tags:
         - Key: Name
