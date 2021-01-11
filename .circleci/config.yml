@@ -57,7 +57,7 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
-      - run: eho "*** Finishing Pipeline"
+      - run: echo "*** Finishing Pipeline ***"
 
 # Orchestrate or schedule a set of jobs
 workflows:
