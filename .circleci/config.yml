@@ -52,10 +52,10 @@ jobs:
 
   smoke_test:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/base
     steps:
       - checkout
-      - run: non_existent_command
+      # - run: non_existent_command
       - on_fail_delete_environment
       
   end_job:
