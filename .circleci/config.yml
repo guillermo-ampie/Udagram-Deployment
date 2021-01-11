@@ -54,8 +54,7 @@ jobs:
             name: Smoke Test
             command: |
               return 1
-        - run:
-            command: destroy_environment
+        - destroy_environment:
             when: on_fail
 
   end_job:
