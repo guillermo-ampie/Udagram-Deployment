@@ -28,6 +28,7 @@ jobs:
       - run:
           name: Deploy CloudFormation stack
           command: |
+            export TERM=ansi
             aws cloudformation deploy --template-file sample-stack.yml \
             --stack ${STACK_NAME}
       - destroy_environment
