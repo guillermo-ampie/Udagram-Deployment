@@ -39,4 +39,6 @@ Resources:
       Tags:
         - Key: Name
           Value: "sample"
+        - Key: Project
+          Value: "Udacity"
 
