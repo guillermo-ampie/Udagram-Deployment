@@ -70,4 +70,6 @@ workflows:
       - smoke_test:
           requires:
             - configure_infrastructure
-      - end_job
+      - end_job:
+          requires:
+            - smoke_test
