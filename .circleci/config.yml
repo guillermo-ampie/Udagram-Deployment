@@ -4,7 +4,6 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
-  aws-cli: circleci/aws-cli@1.3.2
 
 # Project's environment variable:
 # STACK_NAME: The CloudFormation stack name to create
@@ -30,7 +29,6 @@ jobs:
       - run:
           name: Deploy CloudFormation stack
           command: |
-            export TERM=ansi
             aws cloudformation deploy --template-file sample-stack.yml \
             --stack ${STACK_NAME}
       - on_fail_delete_environment
