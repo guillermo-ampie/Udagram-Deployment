@@ -48,6 +48,16 @@ jobs:
               else
                return 1
               fi
+        - run: 
+            name: "Activate On Error - protocol"
+            command: echo "We got an error, launching rollback process"
+            when: on_fail
+
+  end_job:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: eho "*** Finishing Pipeline"
 
 # Orchestrate or schedule a set of jobs
 workflows:
@@ -60,3 +70,4 @@ workflows:
       - smoke_test:
           requires:
             - configure_infrastructure
+      - end_job
