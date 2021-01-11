@@ -12,7 +12,7 @@ commands:
   destroy_environment: 
     steps:
       - run: 
-          name:  "Delete the environment"
+          # name:  "Delete the environment"
           command: |
             echo "Deleting stack: ${STACK_NAME}"
             export TERM=ansi
