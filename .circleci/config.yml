@@ -5,17 +5,29 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
 
+commands:
+  destroy_environment: 
+    parameters:
+      stack_name:
+        type: string
+    steps:
+      - run: 
+          name:  "Delete the environment"
+          command: |
+            echo "Deleting stack --> parameters.stack_name <--"
+            aws cloudformation delete-stack --stack-name parameters.stack_name
+
 jobs:
-  # create_infrastructure:
-  #   docker:
-  #   - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Deploy CloudFormation Stack
-  #         command: |
-  #           aws cloudformation deploy --template-file sample-stack.yml \
-  #           --stack sample-ec2-stack
+  create_infrastructure:
+    docker:
+    - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Deploy CloudFormation Stack
+          command: |
+            aws cloudformation deploy --template-file sample-stack.yml \
+            --stack sample-ec2-stack
 
   configure_infrastructure:
     docker:
@@ -39,19 +51,11 @@ jobs:
       steps:
         - run: apk add --update curl
         - run:
-            name: smoke test.
+            name: Smoke Test
             command: |
-              URL="https://
-              blog.udacity.com/"
-              if curl -s --head ${URL} # test if blog.udacity. com exists
-              then
-               return 0
-              else
-               return 1
-              fi
-        - run: 
-            name: "Activate On Error - protocol"
-            command: echo "We got an error, launching rollback process..."
+              return 1
+        - destroy_environment:
+            stack_name: sample-ec2-stack
             when: on_fail
 
   end_job:
@@ -66,7 +70,7 @@ workflows:
   deploy_infrastructure:
     # Run the welcome/run job in its own container
     jobs:
-      # - create_infrastructure
+      - create_infrastructure
       - configure_infrastructure
       - smoke_test:
           requires:
