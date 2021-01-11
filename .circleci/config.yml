@@ -9,10 +9,10 @@ orbs:
 # STACK_NAME: The CloudFormation stack name to create
 
 commands:
-  destroy_environment: 
+  on_fail_delete_environment: 
     steps:
       - run: 
-          # name:  "Delete the environment"
+          name:  "Delete the environment"
           command: |
             echo "Deleting stack: ${STACK_NAME}"
             export TERM=ansi
@@ -32,7 +32,7 @@ jobs:
             export TERM=ansi
             aws cloudformation deploy --template-file sample-stack.yml \
             --stack ${STACK_NAME}
-      - destroy_environment
+      - on_fail_delete_environment
 
   configure_infrastructure:
     docker:
@@ -56,7 +56,7 @@ jobs:
     steps:
       - checkout
       - run: non_existent_command
-      - destroy_environment
+      - on_fail_delete_environment
       
   end_job:
     docker:
