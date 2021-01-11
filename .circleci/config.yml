@@ -68,8 +68,8 @@ jobs:
       #     name: "Initiating rollback..."
       #     command: destroy_environment
       #     when: on_fail
-      - run:
-          command: say_hello
+      - say_hello:
+          who: "you, you, you"
           when: on_fail
 
   end_job:
