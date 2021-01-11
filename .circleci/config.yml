@@ -41,7 +41,8 @@ jobs:
         - run:
             name: smoke test.
             command: |
-              URL="https://VVVVblog.udacity.com/"
+              URL="https://
+              blog.udacity.com/"
               if curl -s --head ${URL} # test if blog.udacity. com exists
               then
                return 0
@@ -50,7 +51,7 @@ jobs:
               fi
         - run: 
             name: "Activate On Error - protocol"
-            command: echo "We got an error, launching rollback process"
+            command: echo "We got an error, launching rollback process..."
             when: on_fail
 
   end_job:
