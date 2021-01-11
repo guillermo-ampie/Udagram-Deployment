@@ -6,7 +6,7 @@ orbs:
   welcome: circleci/welcome-orb@0.4.1
 
 # Project's environment variable:
-# STACK_NAME: The CloudFormation stack name to create
+# STACK_NAME: The CloudFormation stack name
 
 commands:
   on_fail_delete_environment: 
@@ -18,7 +18,6 @@ commands:
             export TERM=ansi
             aws cloudformation delete-stack --stack-name ${STACK_NAME}
           when: on_fail
-
 
 jobs:
   create_infrastructure:
@@ -55,6 +54,7 @@ jobs:
     steps:
       - checkout
       # - run: non_existent_command
+      - run: echo "Running smoke tests"
       - on_fail_delete_environment
       
   end_job:
@@ -70,13 +70,13 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - create_infrastructure
-      # - configure_infrastructure:
-      #     requires:
-      #       - create_infrastructure
+      - configure_infrastructure:
+          requires:
+            - create_infrastructure
       - smoke_test:
           requires:
-            # - configure_infrastructure
-            - create_infrastructure
-      # - end_job:
-      #     requires:
-      #       - smoke_test
+            - configure_infrastructure
+            # - create_infrastructure
+      - end_job:
+          requires:
+            - smoke_test
