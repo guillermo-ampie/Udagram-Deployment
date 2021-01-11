@@ -34,8 +34,8 @@ Resources:
       SecurityGroups: 
         - !Ref EC2SecurityGroup
       KeyName: !Ref EC2KeyPair
-      # ImageId: !Ref LatestAmiId
-      ImageId: ami-07dd19a7900a1f049 #Ubuntu Server 18.04 LTS (HVM), SSD Volume Type - ami-0ac73f33a1888c64a (64-bit x86)
+      ImageId: !Ref LatestAmiId
+      # ImageId: ami-07dd19a7900a1f049 #Ubuntu Server 18.04 LTS (HVM), SSD Volume Type - ami-0ac73f33a1888c64a (64-bit x86)
       InstanceType: t2.micro
       Tags:
         - Key: Name
