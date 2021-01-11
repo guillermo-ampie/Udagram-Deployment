@@ -13,7 +13,7 @@ commands:
       - run: 
           name:  "Delete the environment"
           command: |
-            echo "Deleting stack --> parameters.stack_name <--"
+            echo "Deleting stack: ${STACK_NAME}"
             aws cloudformation delete-stack --stack-name ${STACK_NAME}
 
 jobs:
