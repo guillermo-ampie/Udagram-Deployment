@@ -63,7 +63,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: apt-get add --update curl
       - run: return 1
       # - run: 
       #     name: "Initiating rollback..."
