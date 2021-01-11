@@ -54,7 +54,7 @@ jobs:
     steps:
       - checkout
       - run: apk add --update curl
-      - run: return 0
+      - run: return 1
       - run: 
           name: "Initiating rollback..."
           command: destroy_environment
