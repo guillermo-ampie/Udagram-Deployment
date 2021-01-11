@@ -63,13 +63,14 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: return 1
+      - run: non_existent_command
       # - run: 
       #     name: "Initiating rollback..."
       #     command: destroy_environment
       #     when: on_fail
-      - say_hello:
-          who: "You, you, you!"
+      - run:
+          command: say_hello
+          when: on_fail
 
   end_job:
     docker:
