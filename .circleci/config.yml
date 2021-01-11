@@ -70,7 +70,7 @@ jobs:
       #     when: on_fail
       - say_hello:
           who: "you, you, you"
-          when: on_fail
+    when: on_fail
 
   end_job:
     docker:
