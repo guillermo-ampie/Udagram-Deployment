@@ -1,52 +1,49 @@
 Description: >
-    Project: Udagram - An Instagram like application
-    Author: Guillermo Ampie
-    This template deploys:
-    - Security groups for the Load Balancer and the Web server
-    - An Application Load Balancer with LaunchConfiguration, AutoScalingGroup, Listener, ListenerRule and TargetGroup
-    - A bastion host
-
+  Project: Udagram - An Instagram like application
+  Author: Guillermo Ampie
+  This template deploys:
+  - Security groups for the Load Balancer and the Web server
+  - An Application Load Balancer with LaunchConfiguration, AutoScalingGroup, Listener, ListenerRule and TargetGroup
+  - A bastion host
 
 Parameters:
-    EnvironmentName:
-        Description: An environment name that will be prefixed to resource names.
-        Type: String
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names.
+    Type: String
 
-    AppStorageBucket:
-        Description: The S3 bucket where the app is stored.
-        Type: String
+  AppStorageBucket:
+    Description: The S3 bucket where the app is stored.
+    Type: String
 
-    MyIpAddressRange:
-      Description: The client's host public IP address range (a.b.c.d/x, like 189.216.92.67/32 or 189.216.92.0/24) from which you will connect to the bastion host.
-      Type: String
+  MyIpAddressRange:
+    Description: The client's host public IP address range (a.b.c.d/x, like 189.216.92.67/32 or 189.216.92.0/24) from which you will connect to the bastion host.
+    Type: String
 
-    BastionKeyPair:
-      Description: The key-pair for the bastion host.
-      Type: String 
+  BastionKeyPair:
+    Description: The key-pair for the bastion host.
+    Type: String
 
-    LatestAmiId:
-      Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
-      Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'        
-
+  LatestAmiId:
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
+    Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 
 Resources:
-
   UdacityS3ReadOnlyEC2:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: /
       Policies:
         - PolicyName: GetObjectOnlyPolicy
           PolicyDocument:
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
               - Effect: Allow
                 Action: s3:GetObject
@@ -54,50 +51,48 @@ Resources:
 
   ProfileWithRolesForOurApp:
     Type: AWS::IAM::InstanceProfile
-    Properties: 
+    Properties:
       Path: "/"
-      Roles: 
-      - !Ref UdacityS3ReadOnlyEC2
+      Roles:
+        - !Ref UdacityS3ReadOnlyEC2
 
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allows HTTP traffic to the Load Balancer
       VpcId:
-        Fn::ImportValue:
-          !Sub "${EnvironmentName}-VPC"
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPC"
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
       SecurityGroupEgress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp:  0.0.0.0/0       
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
 
   WebServerSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allows HTTP to the web server hosts and SSH from the bastion host
       VpcId:
-        Fn::ImportValue:
-          !Sub "${EnvironmentName}-VPC"
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPC"
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: 22
-        ToPort: 22
-        SourceSecurityGroupId: !GetAtt BastionSecurityGroup.GroupId
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !GetAtt BastionSecurityGroup.GroupId
       SecurityGroupEgress:
-      - IpProtocol: tcp
-        FromPort: 0
-        ToPort: 65535
-        CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
 
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
@@ -115,64 +110,63 @@ Resources:
       ImageId: ami-0ac73f33a1888c64a #Ubuntu Server 18.04 LTS (HVM), SSD Volume Type
       #KeyName: !Ref BastionKeyPair
       SecurityGroups:
-      - Ref: WebServerSecGroup
+        - Ref: WebServerSecGroup
       InstanceType: t3.medium
       BlockDeviceMappings:
-      - DeviceName: "/dev/sdk"
-        Ebs:
-          VolumeSize: '10'
+        - DeviceName: "/dev/sdk"
+          Ebs:
+            VolumeSize: 10
       IamInstanceProfile: !Ref ProfileWithRolesForOurApp
 
   WebAppGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-      - Fn::ImportValue: 
-          !Sub "${EnvironmentName}-PRIVATE-SUBNETS"
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PRIVATE-SUBNETS"
       LaunchConfigurationName:
         Ref: WebAppLaunchConfig
-      MinSize: '1'
-      MaxSize: '4'
-      HealthCheckGracePeriod: '240'
+      MinSize: "1"
+      MaxSize: "4"
+      HealthCheckGracePeriod: 240
       TargetGroupARNs:
-      - Ref: WebAppTargetGroup  
+        - Ref: WebAppTargetGroup
       Tags:
         - Key: "Name"
-          Value: "internal-www" 
-          PropagateAtLaunch: "true"      
+          Value: "internal-www"
+          PropagateAtLaunch: true
 
   WebAppLB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-      - Fn::ImportValue: !Sub "${EnvironmentName}-PUBLIC-SUBNET-1"
-      - Fn::ImportValue: !Sub "${EnvironmentName}-PUBLIC-SUBNET-2"
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PUBLIC-SUBNET-1"
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PUBLIC-SUBNET-2"
       SecurityGroups:
-      - Ref: LBSecGroup
+        - Ref: LBSecGroup
 
   Listener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-      - Type: forward
-        TargetGroupArn:
-          Ref: WebAppTargetGroup
+        - Type: forward
+          TargetGroupArn:
+            Ref: WebAppTargetGroup
       LoadBalancerArn:
         Ref: WebAppLB
-      Port: '80'
+      Port: 80
       Protocol: HTTP
 
   ALBListenerRule:
-      Type: AWS::ElasticLoadBalancingV2::ListenerRule
-      Properties:
-        Actions:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
         - Type: forward
-          TargetGroupArn: !Ref 'WebAppTargetGroup'
-        Conditions:
+          TargetGroupArn: !Ref "WebAppTargetGroup"
+      Conditions:
         - Field: path-pattern
           Values: [/]
-        ListenerArn: !Ref 'Listener'
-        Priority: 1
+      ListenerArn: !Ref "Listener"
+      Priority: 1
 
   WebAppTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -185,45 +179,44 @@ Resources:
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 3
-      VpcId: 
+      VpcId:
         Fn::ImportValue:
           Fn::Sub: "${EnvironmentName}-VPC"
 
-# Bastion host related resources: begin
-  BastionHostRole:  
-    Type: 'AWS::IAM::Role'  
-    Properties:  
-      Path: /  
-      AssumeRolePolicyDocument:  
-        Version: 2012-10-17  
-        Statement:  
-        - Effect: Allow  
-          Principal:  
-            Service:  
-            - ec2.amazonaws.com  
-          Action:  
-          - 'sts:AssumeRole'  
-      ManagedPolicyArns:  
-        - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM'
+  # Bastion host related resources: begin
+  BastionHostRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 
-  BastionHostProfile:  
-    Type: 'AWS::IAM::InstanceProfile'  
-    Properties:  
-      Roles: 
-      - !Ref BastionHostRole  
+  BastionHostProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Roles:
+        - !Ref BastionHostRole
       Path: /
 
-  BastionSecurityGroup:  
-    Type: 'AWS::EC2::SecurityGroup'  
-    Properties:  
+  BastionSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
       GroupDescription: Enables SSH Access to Bastion host.
-      VpcId:         
-        Fn::ImportValue:
-          !Sub "${EnvironmentName}-VPC"  
-      SecurityGroupIngress:  
-        - IpProtocol: tcp  
-          FromPort: 22  
-          ToPort: 22  
+      VpcId:
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
           CidrIp: !Ref MyIpAddressRange
 
   BastionInstance:
@@ -231,11 +224,11 @@ Resources:
     Properties:
       ImageId: !Ref LatestAmiId
       InstanceType: t2.micro
-      SecurityGroupIds: 
-      - !GetAtt BastionSecurityGroup.GroupId
+      SecurityGroupIds:
+        - !GetAtt BastionSecurityGroup.GroupId
       SubnetId:
         Fn::ImportValue: !Sub "${EnvironmentName}-PUBLIC-SUBNET-1"
-      KeyName: !Ref BastionKeyPair      
+      KeyName: !Ref BastionKeyPair
       Tags:
         - Key: Name
           Value: "bastion"
@@ -243,11 +236,10 @@ Resources:
 
 # Bastion host related resources: end
 
-Outputs: 
-
+Outputs:
   LoadBalancerDnsName:
     Description: The Load Balancer DNS name.
-    Value: !Join [ "", [ "http://", !GetAtt WebAppLB.DNSName ]]
+    Value: !Join ["", ["http://", !GetAtt WebAppLB.DNSName]]
     Export:
       Name: !Sub ${EnvironmentName}-LB-ENDPOINT
 
