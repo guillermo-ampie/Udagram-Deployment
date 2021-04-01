@@ -14,3 +14,4 @@ Project #2 included in Udacity's [CloudDevOps Engineer Nanodegree](https://www.u
 ## Infrastructure Architecture:
 ![architecture](../master/udagram%20architecture.png)
 
+<!--- TODO: Add circleCI variables section -->
